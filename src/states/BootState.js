@@ -3,7 +3,6 @@ import * as Phaser from 'phaser'
 export default class BootState extends Phaser.State {
 
     preload() {
-        // this.load.image('preloader', 'assets/preloader.gif')
     }
 
     create() {
