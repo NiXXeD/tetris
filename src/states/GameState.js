@@ -32,6 +32,8 @@ export default class GameState extends Phaser.State {
             spaceKey: this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
             escKey: this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
         }
+        this.keys.leftKey.onDown.add(() => this.movePiece('left'))
+        this.keys.rightKey.onDown.add(() => this.movePiece('right'))
         this.keys.escKey.onDown.add(() => this.togglePause())
         this.keys.spaceKey.onDown.add(() => this.toggleHoldPiece())
 
@@ -88,6 +90,14 @@ export default class GameState extends Phaser.State {
         }
     }
 
+    movePiece(direction) {
+        if (direction === 'left') {
+            this.currentPiece.moveRelative(-32, 0)
+        } else if (direction === 'right') {
+            this.currentPiece.moveRelative(32, 0)
+        }
+    }
+
     update() {
         // if (this.keys.upKey.downDuration(250)) {
         //
@@ -101,7 +111,7 @@ export default class GameState extends Phaser.State {
                 piece.destroy()
                 this.nextPiece()
             } else {
-                piece.moveRelative(0, 3)
+                piece.moveRelative(0, 2)
             }
         }
     }

@@ -64,5 +64,4 @@ export const PieceTypes = [
             {ox: 2, oy: 1}   // ___
         ]
     }
-
 ]
