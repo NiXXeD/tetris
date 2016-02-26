@@ -6,7 +6,7 @@ export default class GameState extends Phaser.State {
 
     create() {
         this.pieces = []
-        this.bag = new PieceBag(this.game, 3)
+        this.bag = new PieceBag(this.game, 2)
         this.futures = [this.bag.takeFromBag(), this.bag.takeFromBag(), this.bag.takeFromBag()]
         this.holdPiece = null
         this.currentPiece = null
@@ -18,7 +18,9 @@ export default class GameState extends Phaser.State {
             let x = this.boardX + (i % 10) * 32
             let y = this.boardY + Math.floor(i / 10) * 32
 
-            this.game.add.sprite(x, y, 'bit', 11)
+            let sprite = this.game.add.sprite(x, y, 'bit', 11)
+            sprite.sendToBack()
+            return sprite
         })
 
         //hotkeys
@@ -27,16 +29,40 @@ export default class GameState extends Phaser.State {
             downKey: this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN),
             leftKey: this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
             rightKey: this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
+            spaceKey: this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR),
             escKey: this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
         }
         this.keys.escKey.onDown.add(() => this.togglePause())
-        
-        this.game.time.events.repeat(250, 1000, () => this.addPiece())
+        this.keys.spaceKey.onDown.add(() => this.toggleHoldPiece())
+
+        //start pieces in play
+        this.nextPiece()
+        this.toggleHoldPiece()
+        this.currentPiece.previouslyHeld = false
     }
     
-    nextPiece() {
-        this.currentPiece = this.futures.shift()
+    nextPiece(piece) {
+        if (piece) {
+            this.currentPiece = piece
+        } else {
+            this.currentPiece = this.futures.shift()
+            this.nextFuture()
+        }
+
+        let offset = Math.floor((10 - this.currentPiece.width) / 2)
+        let x = this.boardX + (offset * 32)
+        let y = this.boardY
+        this.currentPiece.move(x, y)
+    }
+
+    nextFuture() {
         this.futures.push(this.bag.takeFromBag())
+
+        _.each(this.futures, (future, index) => {
+            let x = 550 + (future.width === 3 ? 16 : 0)
+            let y = 75 + (100 * index)
+            future.move(x, y)
+        })
     }
 
     addPiece() {
@@ -47,21 +73,37 @@ export default class GameState extends Phaser.State {
         this.pieces.push(piece)
     }
 
+    toggleHoldPiece() {
+        if (!this.currentPiece.previouslyHeld) {
+            let oldHold = this.holdPiece
+            this.holdPiece = this.currentPiece
+
+            this.nextPiece(oldHold)
+
+            this.currentPiece.previouslyHelp = true
+
+            let x = 50
+            let y = this.boardY
+            this.holdPiece.move(x, y)
+        }
+    }
+
     update() {
         // if (this.keys.upKey.downDuration(250)) {
         //
         // }
 
-        _.each(this.pieces, piece => {
-            if (piece) {
-                if (piece.y > this.game.world.height) {
-                    _.pull(this.pieces, piece)
-                    piece.destroy()
-                } else {
-                    piece.moveRelative(0, 1)
-                }
+        if (this.currentPiece) {
+            let piece = this.currentPiece
+
+            if (piece.y > this.game.world.height) {
+                _.pull(this.pieces, piece)
+                piece.destroy()
+                this.nextPiece()
+            } else {
+                piece.moveRelative(0, 3)
             }
-        })
+        }
     }
 
     togglePause() {

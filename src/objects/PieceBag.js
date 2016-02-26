@@ -3,9 +3,9 @@ import {PieceTypes} from 'objects/PieceTypes'
 import Piece from 'objects/Piece'
 
 export default class PieceBag {
-    constructor(game, bagSize) {
+    constructor(game, bagSize = 1) {
         this.game = game
-        this.bagSize = bagSize
+        this.bagSize = bagSize 
         this.bag = []
 
         this.fillBag()

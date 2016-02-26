@@ -2,8 +2,7 @@ import _ from 'lodash'
 
 export default class Piece {
     constructor(game, pieceType) {
-        this.frame = pieceType.frame
-        this.bits = pieceType.bits
+        _.merge(this, pieceType)
         this.x = -100
         this.y = -100
 
@@ -15,6 +14,7 @@ export default class Piece {
     move(x, y) {
         this.x = x
         this.y = y
+        
         _.each(this.bits, bit => {
             bit.sprite.x = x + (bit.ox * 32)
             bit.sprite.y = y + (bit.oy * 32)
