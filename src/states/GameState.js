@@ -40,6 +40,7 @@ export default class GameState extends Phaser.State {
         this.keys.escKey.onDown.add(() => this.togglePause())
         this.keys.spaceKey.onDown.add(() => this.toggleHoldPiece())
         this.moveTime = 0
+        this.lastMove = 0
 
         //start music
         this.music = this.game.add.audio('music')
@@ -63,6 +64,7 @@ export default class GameState extends Phaser.State {
         this.currentPiece.x = Math.floor((10 - this.currentPiece.width) / 2)
         this.currentPiece.y = this.currentPiece.startOffset
         this.positionCurrentPiece()
+        this.lastMove = this.game.time.now + 300
         
         if (!this.hitCheck(0, 0)) {
             this.game.state.start('GameOverState')
@@ -198,6 +200,11 @@ export default class GameState extends Phaser.State {
             this.movePiece(1, 0)
         } else {
             this.moveTime = 0
+        }
+
+        if (this.game.time.now > this.lastMove) {
+            this.lastMove = this.game.time.now + 300
+            this.movePiece(0, 1)
         }
     }
 
