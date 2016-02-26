@@ -80,7 +80,7 @@ export default class GameState extends Phaser.State {
 
             this.nextPiece(oldHold)
 
-            this.currentPiece.previouslyHelp = true
+            this.currentPiece.previouslyHeld = true
 
             let x = 50
             let y = this.boardY
