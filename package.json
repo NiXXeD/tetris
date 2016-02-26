@@ -1,7 +1,7 @@
 {
   "name": "tetris",
   "version": "0.0.0",
-  "description": "Tetris clone build with PhaserJS and ES6.",
+  "description": "Tetris game build with PhaserJS and ES6.",
   "main": "src/index.js",
   "scripts": {
     "start": "gulp",

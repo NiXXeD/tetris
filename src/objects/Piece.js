@@ -1,11 +1,9 @@
 import _ from 'lodash'
-import {PieceTypes} from 'objects/PieceTypes'
 
 export default class Piece {
-    constructor(game) {
-        let type = _.cloneDeep(_.sample(PieceTypes))
-        this.frame = type.frame
-        this.bits = type.bits
+    constructor(game, pieceType) {
+        this.frame = pieceType.frame
+        this.bits = pieceType.bits
         this.x = -100
         this.y = -100
 
